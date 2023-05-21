@@ -1,39 +1,35 @@
-function fetchRandomUser() {
-  fetch("https://www.randomuser.me/api")
+function fetchCountryDetails() {
+  fetch("https://restcountries.com/v3.1/name/united%20kingdom")
     .then(function (response) {
       if (!response.ok) {
-        throw new Error("Failed to fetch user data.");
+        throw new Error("Failed to fetch country details.");
       }
       return response.json();
     })
     .then(function (data) {
-      const user = data.results[0];
-      console.log(user);
+      const country = data[0];
+      console.log(country);
 
-      // Build the profile page
-      const profileContainer = document.getElementById("profile-container");
+      // Display country name
+      const countryName = document.getElementById("country-name");
+      countryName.textContent = country.name.common;
 
-      // Create profile elements
-      const profile = document.createElement("div");
-      profile.className = "profile";
+      // Display capital city
+      const capitalCity = document.getElementById("capital-city");
+      capitalCity.textContent = `Capital City: ${country.capital}`;
 
-      const profileImage = document.createElement("img");
-      profileImage.className = "profile-image";
-      profileImage.src = user.picture.large;
-      profileImage.alt = "Profile Picture";
-      profile.appendChild(profileImage);
-
-      const profileName = document.createElement("div");
-      profileName.className = "profile-name";
-      profileName.textContent = `${user.name.first} ${user.name.last}`;
-      profile.appendChild(profileName);
-
-      profileContainer.appendChild(profile);
+      // Display translated names
+      const translatedNames = document.getElementById("translated-names");
+      for (const langCode in country.translations) {
+        const translation = country.translations[langCode].common;
+        const listItem = document.createElement("li");
+        listItem.textContent = translation;
+        translatedNames.appendChild(listItem);
+      }
     })
     .catch(function (error) {
       console.log(error);
     });
 }
 
-window.onload = fetchRandomUser;
-
+window.onload = fetchCountryDetails;
